@@ -1,0 +1,143 @@
+#!name=YouTube AdBlock (Shadowrocket)
+#!desc=Chặn quảng cáo YouTube ở tầng mạng: bỏ adPlacements/adSlots, ad card trong feed, ad reel trong Shorts, chặn endpoint oad/initplayback. Không cần sideload IPA. Cần bật HTTPS Decrypt và tin cậy CA.
+#!author=Xwuan
+#!category=Xwuan Products
+#!homepage=https://github.com/Xwuan19/Xwuan-Tweaks
+#
+# ============================================================================
+# ĐỌC TRƯỚC KHI DÙNG (3 điều kiện bắt buộc, thiếu 1 là module im lặng)
+# ============================================================================
+# 1. Bật HTTPS Decrypt: Config > ⓘ > HTTPS Decrypt > Certificate > Generate
+#    new CA > Install Certificate, rồi iOS Settings > General > About >
+#    Certificate Trust Settings > bật tin cậy. Không có bước này thì không
+#    host nào được giải mã và mọi hook đều không chạy.
+# 2. UDP phải đi qua proxy (Settings > UDP > Enable Forwarding). YouTube đi
+#    HTTP/3 trên QUIC; QUIC lọt ra ngoài thì phần lớn request không đọc được.
+#    Module chặn UDP của YouTube ở [Rule] để ép về TCP.
+# 3. iOS 15 trở lên. Từ iOS 15 giới hạn bộ nhớ Network Extension tăng từ 15 MB
+#    lên 50 MB. iOS cũ hơn có thể làm module im lặng hoặc rớt VPN.
+# 4. Module chỉ chạy khi 全局路由 = 配置 (global routing = Config). Đây là quy
+#    tắc của Shadowrocket với mọi module có [Rule].
+#
+# ============================================================================
+# KHÔNG XEM ĐƯỢC LOG — ĐỌC KẾT QUẢ Ở ĐÂU
+# ============================================================================
+# Shadowrocket không có trình xem log script. `数据 > 代理` chỉ ghi nhận kết
+# nối, không có console.log. `$notification.post` cũng không có trong runtime
+# Shadowrocket (đó là API của Surge/Loon).
+#
+# Vì vậy module có 2 kênh đọc được:
+#
+#   CÁCH 1 — xem log kết nối có kèm chẩn đoán:
+#     Sửa argument thành:  ads&probe=true
+#     Mở vài video, rồi vào 数据 > 代理 và tìm dòng:
+#       youtubei.googleapis.com/youtubei/v1/keepalive?xwuan=probe&hook=player&in=8842&rm=2&st=patched
+#     Đọc:
+#       hook=player   -> hook ĐÃ CHẠY ở endpoint nào
+#       in=8842       -> body nhận được bao nhiêu byte (0 = không có body)
+#       rm=2          -> số field quảng cáo đã xoá (0 = response này không có ad)
+#       st=patched    -> đã sửa | no_ad | missing_body | parse_fail
+#     Không thấy dòng nào => hook không chạy => về mục 3 điều kiện bắt buộc.
+#
+#   CÁCH 2 — báo cáo gộp:
+#     Mở Safari:  https://www.youtube.com/xwuan-selftest
+#     rồi vào 数据 > 代理, tìm URL có  ?xwuan-report=v1;state=ran;...
+#       state=never_ran -> engine chưa từng chạy (MITM/CA/route sai)
+#       state=ran       -> engine có chạy; đọc phase/reason/rm tiếp theo
+#
+#   Xong nhớ đổi argument về  ads  để tắt probe (đỡ thêm request).
+#
+# ============================================================================
+# GIỚI HẠN — đọc trước khi kỳ vọng
+# ============================================================================
+# Module này chỉ sửa được thứ NẰM TRONG HTTP RESPONSE. Nó KHÔNG làm được những
+# gì các tweak Logos (YTLite / YouMod / ytkace) làm, vì chúng vá thẳng ObjC
+# runtime trong app:
+#   Không làm được: SponsorBlock, tua/tắt quảng cáo, PiP, nền tối, chặn
+#   Shorts, download, đổi giao diện, mở khoá chất lượng cao hơn hạn mức.
+#
+# ============================================================================
+# GHI CHÚ KỸ THUẬT (đã đối chiếu module đang chạy thật)
+# ============================================================================
+# Nguồn đối chiếu:
+#   - Maasea/sgmodule (module YouTube lớn nhất) qua bản lưu YanbingJiang ★149
+#   - hmxxgit/shadowrocket-youtube-adblock (Apache-2.0) — bản tương thích
+#     Shadowrocket đầy đủ nhất, có DIAGNOSTICS.md + bộ test A/B/C/D/E
+#   - app2smile/rules
+#
+# Các kết luận rút ra từ chúng và đã áp vào file này:
+#   1. `engine=jsc` + đọc `$response.bodyBytes` + trả `{bodyBytes}` là cấu
+#      hình hmxxgit dùng cho Shadowrocket, khác với Surge/Loon dùng `.body`.
+#      Engine tự nhận engine qua $environment nên chạy được cả hai.
+#   2. `[Url Rewrite]` cần thêm luật chặn `&oad` và trừ `initplayback` — đây
+#      là chỗ Maasea/hmxxgit đều có mà bản đầu của module này thiếu.
+#   3. Pattern Maasea chỉ khớp khi URL có `?` ngay sau endpoint. URL riêng có
+#      thể không có query, nên module này để `(\?.*)?$`.
+#   4. Khai đủ host của cả `www.youtube.com` (web app) và `-redirector*.googlevideo.com`
+#      như hai nguồn trên.
+#
+# Engine dùng số field protobuf đối chiếu 2 nguồn độc lập:
+#   blockads-android (GPL-3.0) và imitm (MIT): 7 = adPlacements,
+#   68 = adSlots, 153515154 = elementRenderer.
+
+[Rule]
+# --- Ép YouTube rời QUIC/HTTP3 để MITM đọc được body qua TCP ---
+# Dùng PROTOCOL,UDP (không dùng PROTOCOL,QUIC — "QUIC" chỉ có trong Clash).
+AND,((DOMAIN-SUFFIX,googlevideo.com),(PROTOCOL,UDP)),REJECT
+AND,((DOMAIN-SUFFIX,youtube.com),(PROTOCOL,UDP)),REJECT
+AND,((DOMAIN,youtubei.googleapis.com),(PROTOCOL,UDP)),REJECT
+
+[Url Rewrite]
+# Cú pháp: <regex URL> _ reject-200   (dấu _ phân cách regex với action)
+# Đối chiếu nguyên văn từ Maasea và hmxxgit — cả hai dùng đúng 3 dòng đầu.
+
+# --- Video ad: URL khởi tạo có tham số &oad ---
+# (?!dclk_video_ads|videoplayback\?) để KHÔNG chặn luồng phát video thật.
+^https?:\/\/[\w-]+\.googlevideo\.com\/(?!(dclk_video_ads|videoplayback\?)).+&oad _ reject-200
+
+# --- Bỏ &ctier=L để tránh bị bóp băng thông (Maasea dùng 302 để viết lại URL) ---
+(^https?:\/\/[\w-]+\.googlevideo\.com\/(?!dclk_video_ads).+?)&ctier=L(&.+?),ctier,(.+) $1$2$3 302
+
+# --- Endpoint thống kê / quảng cáo của youtube.com ---
+^https?:\/\/(www|s)\.youtube\.com\/api\/stats\/ads _ reject-200
+^https?:\/\/(www|s)\.youtube\.com\/(pagead|ptracking) _ reject-200
+^https?:\/\/s\.youtube\.com\/api\/stats\/qoe\?adcontext _ reject-200
+
+[MITM]
+hostname = %APPEND% youtubei.googleapis.com, www.youtube.com, s.youtube.com, youtube.com, -redirector*.googlevideo.com, *.googlevideo.com, googlevideo.com
+# h2 = true: YouTube đi HTTP/2. Không bật thì phần lớn request không giải mã
+# được và hook không thấy body.
+h2 = true
+
+[Script]
+# Engine tự chứa: products/youtube/engine/youtube_adblock.js
+#   /youtubei/v1/player            -> PlayerResponse (field 7, 68)
+#   /youtubei/v1/get_watch         -> player lồng ở 1 -> 2
+#   /youtubei/v1/browse|next|search-> elementRenderer ad card
+#   /reel_watch_sequence           -> ad reel trong Shorts
+#
+# engine=jsc + binary-body-mode=1 + requires-body=1 + max-size=-1:
+# đây là bộ tham số hmxxgit dùng cho bản tương thích Shadowrocket và họ đã
+# kiểm tra trên máy thật. Engine tự đọc $response.bodyBytes và trả
+# {bodyBytes: ArrayBuffer} khi chạy jsc.
+#
+# argument: ads | off
+#   ads = chặn quảng cáo (mặc định)
+#   off = tắt phần patch protobuf, giữ nguyên chặn URL
+# Thêm &probe=true để bật chẩn đoán (xem mục "KHÔNG XEM ĐƯỢC LOG").
+
+yt-player = type=http-response, pattern=^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/player(\?.*)?$, script-path=https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/products/youtube/engine/youtube_adblock.js?v=20261118_2, requires-body=1, binary-body-mode=1, max-size=-1, engine=jsc, timeout=60, argument=ads
+
+yt-get-watch = type=http-response, pattern=^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/get_watch(\?.*)?$, script-path=https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/products/youtube/engine/youtube_adblock.js?v=20261118_2, requires-body=1, binary-body-mode=1, max-size=-1, engine=jsc, timeout=60, argument=ads
+
+yt-browse = type=http-response, pattern=^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/browse(\?.*)?$, script-path=https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/products/youtube/engine/youtube_adblock.js?v=20261118_2, requires-body=1, binary-body-mode=1, max-size=-1, engine=jsc, timeout=60, argument=ads
+
+yt-next = type=http-response, pattern=^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/next(\?.*)?$, script-path=https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/products/youtube/engine/youtube_adblock.js?v=20261118_2, requires-body=1, binary-body-mode=1, max-size=-1, engine=jsc, timeout=60, argument=ads
+
+yt-search = type=http-response, pattern=^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/search(\?.*)?$, script-path=https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/products/youtube/engine/youtube_adblock.js?v=20261118_2, requires-body=1, binary-body-mode=1, max-size=-1, engine=jsc, timeout=60, argument=ads
+
+yt-shorts = type=http-response, pattern=^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/reel_watch_sequence(\?.*)?$, script-path=https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/products/youtube/engine/youtube_adblock.js?v=20261118_2, requires-body=1, binary-body-mode=1, max-size=-1, engine=jsc, timeout=60, argument=ads
+
+# --- Self-test: đọc kết quả chẩn đoán (xem mục "KHÔNG XEM ĐƯỢC LOG", cách 2) ---
+# http-request trên www.youtube.com. Mở Safari: https://www.youtube.com/xwuan-selftest
+yt-selftest = type=http-request, pattern=^https:\/\/www\.youtube\.com\/xwuan-selftest, script-path=https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/products/youtube/engine/youtube_selftest.js?v=20261118_2, timeout=10

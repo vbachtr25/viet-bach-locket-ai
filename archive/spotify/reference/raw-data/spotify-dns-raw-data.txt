@@ -1,0 +1,55 @@
+SPOTIFY DNS - RAW DATA (tổng hợp phục vụ demo dns rewrite)
+==========================================================
+
+1) Dữ liệu trích từ repo EeveeSpotify (đã clone)
+   - Repo: https://github.com/whoeevee/EeveeSpotifyReborn (branch swift, shallow clone)
+   - Thư mục local: ..\EeveeSpotifyReborn\
+   - File trích xuất thô: .\eevee-repo-extracted.txt
+
+   Tên miền/endpoint Spotify thực sự xuất hiện trong source/code comments:
+   - spclient.wg.spotify.com
+   - https://spclient.wg.spotify.com/pam-view-service/v1/GetPremiumPlanRow (comment trong Sources/.../PremiumPlanRow.pb.swift)
+
+   Endpoint/API khác (không phải Spotify, dùng cho lyrics/metadata trong tweak):
+   - https://api.genius.com
+   - https://lrclib.net/api
+   - https://apic.musixmatch.com
+   - https://p1.petitlyrics.com/api/GetPetitLyricsData.php
+   - https://api.github.com, raw.githubusercontent.com (contributors/check)
+
+   Kết luận từ README/source: EeveeSpotify hoạt động bằng cách hook/vá phía app
+   (intercept request load user data, deserialize/sửa tham số; các bản cũ patch offline.bnk).
+   Không có cơ chế "DNS trả về kết quả đặc biệt cho domain Spotify để kích hoạt EeveeSpotify".
+   Vì vậy không tồn tại bảng ánh xạ "domain Spotify -> DNS answer của EeveeSpotify" trong repo.
+
+2) Tên miền Spotify/ads liên quan thu thập từ profile trong workspace (dữ liệu thô để dùng cho DNS rewrite/match)
+
+   Từ Spotify.mobileconfig (SupplementalMatchDomains):
+   - spclient.wg.spotify.com
+   - gae2-spclient.spotify.com
+   - guc3-spclient.spotify.com
+   - gue1-spclient.spotify.com
+   - gew1-spclient.spotify.com
+   - spclient.spotify.com
+   - apresolve.spotify.com
+
+   Từ UpLocket_xwuan1.mobileconfig (các domain liên quan Spotify/âm thanh/ads/log):
+   - spclient.wg.spotify.com
+   - spclient.spotify.com
+   - gae2-spclient.spotify.com
+   - gew4-spclient.spotify.com
+   - guc3-spclient.spotify.com
+   - apresolve.spotify.com
+   - audio-ak-spotify-com.akamaized.net
+   - gads.current.spotify.com
+   - crashdump.spotify.com
+   - adeventtracker.spotify.com
+   - log.spotify.com
+   - spotify.com
+   (UpLocket còn match nhiều domain khác: RevenueCat, Firebase, YouTube, doubleclick/googlesyndication/imasdk/ads.youtube.com, amplitude.com,... xem plist trong file)
+
+3) Gợi ý dùng cho demo dns rewrite (doh-server.js RULES)
+   - Muốn "rewrite" sang IP gateway/proxy của bạn: { domain: 'spclient.wg.spotify.com', action: 'ip:<IP_CUA_BAN>' }
+   - Muốn chặn domain ads/log: { domain: 'audio-ak-spotify-com.akamaized.net', action: 'zero' } hoặc 'nxdomain'
+   - Không rewrite (forward bình thường): bỏ rule hoặc action 'passthrough'
+   Lưu ý: chỉ rewrite DNS (trả A/AAAA/NXDOMAIN) không thay được nội dung API HTTPS như tweak/gateway MITM.

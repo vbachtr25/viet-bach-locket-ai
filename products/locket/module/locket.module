@@ -1,0 +1,148 @@
+#!name=Locket (Shadowrocket)
+#!desc=Một module: mở cờ Firebase Remote Config + thêm entitlement RevenueCat. Có chế độ `report` để kiểm tra chữ ký trước khi patch. Chỉ dành cho Shadowrocket.
+#!author=Xwuan
+#!category=Xwuan Products
+#!homepage=https://github.com/Xwuan19/Xwuan-Tweaks
+#
+# ============================================================================
+# CHỈ DÀNH CHO SHADOWROCKET
+# ============================================================================
+# File này dùng riêng cú pháp của Shadowrocket và không có ý định chạy trên
+# Surge / Loon / Quantumult X / Stash / Egern. Ba chỗ khác biệt, và cả ba đều
+# là lý do không port:
+#
+#   1. `[Script]` + `type=http-response` + `argument=` là cú pháp Shadowrocket.
+#      Loon dùng `[Script]` khác dạng, Surge dùng `[Script]` theo kiểu
+#      `script-path` + `type` nhưng không có `argument=`.
+#   2. `binary-body-mode=1` + `$response.bodyBytes` -> `{bodyBytes}` là đường
+#      của Shadowrocket. Surge/Loon trả `$response.body` dạng chuỗi.
+#   3. `$persistentStore` (thứ tự tham số write(value, key)) khác nhau giữa
+#      các client. Bản Loon viết lại với `$persistentStore.write(value, key)`
+#      đảo ngược là một lỗi đã làm chết script của module Spotify phổ biến.
+#
+# Engine JS có tự nhận runtime qua `$environment` ở sản phẩm YouTube, nhưng ở
+# đây KHÔNG làm vậy: một đường code, một client, ít chỗ sai hơn.
+#
+# ============================================================================
+# ĐỌC TRƯỚC KHI DÙNG (5 điều kiện, thiếu 1 là module im lặng)
+# ============================================================================
+# 1. Bật HTTPS Decrypt: Config > ⓘ > HTTPS Decrypt > Certificate > Generate
+#    new CA > Install Certificate, rồi iOS Settings > General > About >
+#    Certificate Trust Settings > bật tin cậy.
+# 2. iOS 15 trở lên (giới hạn bộ nhớ Network Extension 50 MB).
+# 3. Module chỉ chạy khi 全局路由 = 配置.
+# 4. Hook request phải chạy. Nếu thấy `st=not_modified` nghĩa là app vẫn dùng
+#    cache và response không có body để sửa — module sẽ không có tác dụng dù
+#    response script đúng.
+# 5. Đi qua PROXY. Module có [Rule] ép các host này qua PROXY; nếu rule DIRECT
+#    thắng thì TLS không được giải mã và script không chạy.
+#
+# ============================================================================
+# HAI PHẦN, HAI CÁCH XỬ LÝ KHÁC NHAU
+# ============================================================================
+# A) FIREBASE REMOTE CONFIG — sửa thẳng, không cần hỏi trước
+#    Response là JSON phẳng, KHÔNG có chữ ký:
+#      POST /v1/projects/<project>/namespaces/firebase:fetch?key=<api key>
+#      -> { "entries": { "key": "value" }, "state": "UPDATE" }
+#    Đây là feature flag. `argument=flags` lật cờ boolean đang tắt.
+#
+# B) REVENUECAT — KHÔNG tự sửa. Phải chạy `report` trước.
+#    RevenueCat ký số response (Trusted Entitlements, iOS SDK 4.25+). Mã nguồn
+#    công khai cho thấy việc kiểm tra là fail-closed: missingSignature,
+#    missingSignedPayload, payloadSignatureMismatch, invalidIntermediateKey
+#    đều -> verification = .failed. Sửa body thì chắc chắn failed.
+#
+#    NHƯNG `.failed` chỉ là thông tin. Docs chính thức: "verification results
+#    are informational only — your app must check the verification result and
+#    decide how to handle it". SDK không tự chặn; app chặn.
+#
+#    Vì vậy `argument=report` là MẶC ĐỊNH cho phần này. Gộp file không có
+#    nghĩa là tự sửa RevenueCat ngay khi cài — lần đầu cài mà đã sửa là lần
+#    mù, và bạn không phân biệt được "app chặn" với "module sai".
+#
+# ============================================================================
+# QUY TRÌNH — 3 BƯỚC
+# ============================================================================
+# ① CAPTURE cờ (Remote Config) — biết tên key thật trước khi lật
+#    Sửa `locket-rc-fetch` và `locket-rc-realtime`: argument=capture
+#    Kill Locket, mở lại. Mở Safari:
+#      https://firebaseremoteconfig.googleapis.com/xwuan-selftest
+#    Vào 数据 > 代理, tìm `?xwuan-report=...`, đọc `rc.keys=` và `rc.eg=`.
+#    -> Đó là tên key + giá trị THẬT. Đoán tên key là cách chắc chắn nhất để
+#       module "chạy mà không làm gì".
+#    Xong đổi lại: argument=flags
+#
+# ② REPORT chữ ký (RevenueCat) — biết endpoint có được ký không
+#    Để nguyên `locket-rc-response` với argument=report (mặc định).
+#    Kill Locket, mở lại. Cùng chỗ đọc, xem phần `pay=`:
+#      pay.sig=n        KHÔNG có header chữ ký -> patch sẽ sạch
+#      pay.sig=<tên>    CÓ ký               -> patch có thể failed
+#      pay.etag=y       response có ETag
+#      pay.ent=         entitlement hiện có (trống = chưa mua)
+#      pay.sub=         product id đang có (dùng cho pid=)
+#
+# ③ PATCH — chỉ khi ① và ② cho biết cần
+#    locket-rc-response: argument=patch&ek=<ent>&pid=<sub>
+#    Thêm &probe=true vào cả ba hook nếu muốn một dòng ngắn trong 数据 > 代理.
+#    Kill Locket, mở lại, đọc kết quả trên app. Chỉ có ba khả năng:
+#      Gold hiện + tính năng chạy  -> xong
+#      Gold hiện + không chạy      -> backend Locket tự kiểm tra quyền
+#      Không có gì đổi             -> app kiểm tra chữ ký
+#
+# ============================================================================
+# GIỚI HẠN
+# ============================================================================
+#   Làm được:   lật cờ Remote Config; thêm entitlement vào response RevenueCat.
+#   KHÔNG được: tạo chữ ký RevenueCat hợp lệ (không có private key).
+#   KHÔNG được: vượt backend kiểm tra quyền.
+#   KHÔNG được: chạy qua DNS. Ở tầng DNS chuỗi header/ETag không còn như cũ,
+#               `payloadSignatureMismatch` gần như chắc chắn. Xem
+#               products/locket/dns/README.md — hướng đó chỉ có Remote Config.
+#
+# ============================================================================
+# GHI CHÚ KỸ THUẬT
+# ============================================================================
+# - Engine RevenueCat CHỈ trả body, không trả headers. Trả headers là Shadowrocket
+#   thay toàn bộ header response -> mất ETag gốc của server, mà ETag nằm trong
+#   danh sách thành phần được ký. Đừng "cải thiện" thành {body, headers}.
+# - Không đoán tên entitlement: thiếu `ek`/`pid` thì engine không patch.
+# - Runtime Shadowrocket thiếu TextDecoder/TextEncoder: engine có UTF-8 tự viết.
+# - Không gửi body/token/tên entitlement ra ngoài. Probe chỉ có số đếm và y/n.
+# - `$done({})` là body RỖNG, không phải passthrough. Mọi nhánh không sửa gì
+#   đều trả nguyên body gốc; gzip trả nguyên bodyBytes.
+
+[Rule]
+# RevenueCat + Firebase phải đi qua PROXY thì mới giải mã được TLS.
+DOMAIN,api.revenuecat.com,PROXY
+DOMAIN,firebaseremoteconfig.googleapis.com,PROXY
+DOMAIN,firebaseremoteconfigrealtime.googleapis.com,PROXY
+
+[MITM]
+hostname = %APPEND% api.revenuecat.com, firebaseremoteconfig.googleapis.com, firebaseremoteconfigrealtime.googleapis.com
+h2 = true
+
+[Script]
+# ── ① REQUEST: xoá cache header, tránh 304 ────────────────────────────────
+# Không có hook này thì app nhận 304, response không có body, và module "chạy"
+# mà không làm gì. Xoá If-None-Match + If-Modified-Since, KHÔNG xoá Authorization.
+locket-rc-req = type=http-request, pattern=^https:\/\/api\.revenuecat\.com\/v1\/(subscribers|receipts), script-path=https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/products/locket/engine/locket_rc_request.js?v=20261119_1, timeout=10
+
+# ── ② RESPONSE: RevenueCat entitlement ────────────────────────────────────
+# argument: report | patch&ek=<tên>&pid=<product id> | off   (+ &probe=true)
+#   report = KHÔNG sửa gì; ghi tên entitlement + có header chữ ký hay không
+#   patch  = chèn entitlement với ek/pid bạn cung cấp
+# Mặc định là report — cố ý. Xem mục B ở đầu file.
+locket-rc-response = type=http-response, pattern=^https:\/\/api\.revenuecat\.com\/v1\/(subscribers|receipts)(\?.*)?$, script-path=https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/products/locket/engine/locket_revenuecat.js?v=20261119_1, requires-body=1, max-size=-1, timeout=60, argument=report
+
+# ── ③ RESPONSE: Firebase Remote Config ────────────────────────────────────
+# argument: flags | capture | off   (+ &probe=true)
+#   flags   = lật cờ boolean đang tắt sang "true"
+#   capture = KHÔNG sửa, chỉ ghi tên key + giá trị thật
+locket-rc-fetch = type=http-response, pattern=^https:\/\/firebaseremoteconfig\.googleapis\.com\/v1\/projects\/[^/]+\/namespaces\/firebase:fetch(\?.*)?$, script-path=https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/products/locket/engine/locket_remoteconfig.js?v=20261119_1, requires-body=1, max-size=-1, timeout=60, argument=flags
+
+locket-rc-realtime = type=http-response, pattern=^https:\/\/firebaseremoteconfigrealtime\.googleapis\.com\/v1\/projects\/[^/]+\/namespaces\/firebase:fetch(\?.*)?$, script-path=https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/products/locket/engine/locket_remoteconfig.js?v=20261119_1, requires-body=1, max-size=-1, timeout=60, argument=flags
+
+# ── ④ Self-test: đọc cả hai phần trong MỘT báo cáo ────────────────────────
+# Mở Safari:  https://firebaseremoteconfig.googleapis.com/xwuan-selftest
+# (hoặc bất kỳ host nào trong [MITM] — cùng một báo cáo)
+locket-selftest = type=http-request, pattern=^https:\/\/(firebaseremoteconfig|api\.revenuecat)\.googleapis?\.com\/xwuan-selftest|^https:\/\/api\.revenuecat\.com\/v1\/xwuan-selftest, script-path=https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/products/locket/engine/locket_selftest.js?v=20261119_1, timeout=10

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>PayloadCertificateFileName</key>
+			<string>EeveeDemoRootCA.cer</string>
+			<key>PayloadContent</key>
+			<data>
+			MIIDCTCCAfGgAwIBAgIQG023Y5suJ5hGy6oaI7FbuzANBgkqhkiG9w0BAQsFADAd
+			MRswGQYDVQQDDBJFZXZlZSBEZW1vIFJvb3QgQ0EwHhcNMjYxMTE4MTMxODI1WhcN
+			MzYxMTE4MTMyODI1WjAdMRswGQYDVQQDDBJFZXZlZSBEZW1vIFJvb3QgQ0EwggEi
+			MA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCufk2AqT1rW8USCQCj9P6mhZOf
+			Pnoqa4H4JL4sV1jnnKp5usaroONS1gZ/h33SRPbs7zFMGQGk716zsa4kiN5jiEJF
+			CfpOkenze0DmSBilf7VuK6nTqfcaRRfeDubzifjoOIOntD4u6Ow4FmFONz9IlISJ
+			GaXjVxewbksvyK8Xf7/rKR7/HvQNqjhwmfoPXgwCLrT7ACY66gu8fKYQUxUTMDOF
+			EMqjvWKidPwb+gLhbEJX64W0W5mrhcrATgevpuKm1U/oaByprIXRosFQs5kDe6N7
+			yXXlwLyHW6oTnn0WsUvqxBe+Y2MRmfspgw6TCoLzwWSj90UiwaJULBR6IuUJAgMB
+			AAGjRTBDMA4GA1UdDwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1Ud
+			DgQWBBTY0o+50xogpat+g/OGW58qtc+7GDANBgkqhkiG9w0BAQsFAAOCAQEAWx5I
+			sL0jUDYbHykEpEfyzNkC8uHi5dE91fWl0VlKVJzuS3AG3uDFqGUeUeEfBuSNwcfm
+			GUDh1DqUp7iGgsAwZt4eiqP5TxYqBaQmH4j66+emFIg/M/7Rsm6J1AE2KZxoemXt
+			AtMW18YFIVhqWeS2vWVj+AzOUvFp5nOP5FY88ZiJI41bPNw71FxiEJqSfPinpKAK
+			/ABBniLsTp3Um7cfCFzLd07Acfkl+qL09P9MAjMotBQsXi23zRNSgQqAQ1TahOSW
+			w2PhUOy+CNS1z1YiV+5+3p2INlAr3RfhpAZIkhiRTk7bnRO0QouqddePTm5Tec6L
+			NyLjxOgWZwl0m6oDeg==
+			</data>
+			<key>PayloadDisplayName</key>
+			<string>Eevee Demo Root CA</string>
+			<key>PayloadIdentifier</key>
+			<string>com.eevee.demo.ca</string>
+			<key>PayloadType</key>
+			<string>com.apple.security.root</string>
+			<key>PayloadUUID</key>
+			<string>EF38C4E1-89D9-4B89-9AFD-999591110CAD</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>DNSSettings</key>
+			<dict>
+				<key>DNSProtocol</key>
+				<string>HTTPS</string>
+				<key>ServerURL</key>
+				<string>https://192.168.50.100:8443/dns-query</string>
+				<key>SupplementalMatchDomains</key>
+				<array>
+					<string>spclient.wg.spotify.com</string>
+					<string>gae2-spclient.spotify.com</string>
+					<string>gew1-spclient.spotify.com</string>
+					<string>gew4-spclient.spotify.com</string>
+					<string>guc3-spclient.spotify.com</string>
+					<string>gue1-spclient.spotify.com</string>
+					<string>spclient.spotify.com</string>
+					<string>apresolve.spotify.com</string>
+					<string>login5.spotify.com</string>
+					<string>audio-ak-spotify-com.akamaized.net</string>
+					<string>audio-akp-quic-spotify-com.akamaized.net</string>
+					<string>heads-ak-spotify-com.akamaized.net</string>
+				</array>
+				<key>SupplementalMatchDomainsNoSearch</key>
+				<true/>
+			</dict>
+			<key>PayloadDisplayName</key>
+			<string>Eevee Spotify DNS Rewrite (Demo)</string>
+			<key>PayloadIdentifier</key>
+			<string>com.eevee.demo.dns</string>
+			<key>PayloadType</key>
+			<string>com.apple.dnsSettings.managed</string>
+			<key>PayloadUUID</key>
+			<string>E61D2565-75EF-4220-8016-9F393AA32C35</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>PayloadDescription</key>
+	<string>Demo DoH + Root CA cho DNS rewrite Spotify tren may local. Sau khi cai, can tin cay chung chi Eevee Demo Root CA trong Cai dat.</string>
+	<key>PayloadDisplayName</key>
+	<string>Eevee Spotify DNS Demo</string>
+	<key>PayloadIdentifier</key>
+	<string>com.eevee.demo.profile</string>
+	<key>PayloadOrganization</key>
+	<string>Eevee Demo</string>
+	<key>PayloadRemovalDisallowed</key>
+	<false/>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>8A37B6F1-BB68-48D2-A869-91194C28F9F6</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>

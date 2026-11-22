@@ -1,0 +1,13 @@
+#!name = Locket VIP (Video 30s + AI Filters & Photobooth)
+#!desc = Kích hoạt Locket Gold trọn đời + Quay video 30s + AI Filters & Photobooth + Khung Widget & Caption VIP. By Xwuan
+#!author = Xwuan
+#!homepage = https://github.com/Xwuan19/Xwuan-Tweaks
+#!icon = https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/assets/locket_gold.jpg
+
+[Script]
+http-response ^https:\/\/api\.revenuecat\.com\/.+\/(receipts$|subscribers\/[^/]+$) script-path=https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/scripts/locket_revenuecat_response.js, requires-body=true, timeout=60, tag=Locket_RC_Response
+http-request ^https:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers) script-path=https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/scripts/locket_revenuecat_request.js, timeout=60, tag=Locket_RC_Request
+http-response ^https:\/\/firebaseremoteconfig\.googleapis\.com\/v1\/projects\/locket-4252a\/.+ script-path=https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/scripts/locket_firebase_response.js, requires-body=true, timeout=60, tag=Locket_Firebase_Response
+
+[Mitm]
+hostname = api.revenuecat.com, firebaseremoteconfig.googleapis.com

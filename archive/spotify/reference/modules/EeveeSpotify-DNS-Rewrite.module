@@ -1,0 +1,47 @@
+#!name=Spotify Module Research (Eevee-style hooks)
+#!desc=Tập trung nghiên cứu module Shadowrocket: chặn QUIC/ads, bỏ cache (if-none-match), hook bootstrap/customize & remote-config/nebula (protobuf). Tham chiếu EeveeSpotifyReborn + mẫu thực tế (devchristian1337). Cần MITM CA của Shadowrocket; script patch protobuf hiện là khung passthrough.
+#!author=research
+#!homepage=local
+
+[Host]
+# (Tuỳ chọn) DNS rewrite/override trong module: trỏ domain về IP gateway/proxy nếu bạn tự dựng phía sau.
+# Mặc định bỏ trống để tập trung MITM+Script/Rewrite. Bật bằng cách bỏ comment và đổi IP.
+# spclient.wg.spotify.com = 203.0.113.10
+# *-spclient.spotify.com = 203.0.113.10
+# apresolve.spotify.com = 203.0.113.10
+
+[Rule]
+# Ép spclient qua TCP để MITM/script bắt được (QUIC/UDP:443 có thể bypass)
+AND,((DOMAIN-SUFFIX,spotify.com),(PROTOCOL,QUIC)),REJECT
+# Telemetry/ads (tuỳ chọn, tham khảo module thực tế)
+# DOMAIN,aet.spotify.com,REJECT
+
+[URL Rewrite]
+# Chặn một số endpoint ads/upsell sớm (pattern tham khảo module thực tế)
+^https:\/\/(spclient\.wg|.*-spclient)\.spotify\.com(:443)?\/pendragon - reject-dict
+^https:\/\/(?:spclient\.wg|[\w-]+-spclient)\.spotify\.com(?::443)?\/(?:ads\/|ad-logic\/|[^?#]*\/ad-on-app-open|premium-marketing\/upsellOffer) - reject
+
+[Header Rewrite]
+# Xoá if-none-match để server trả body mới (tránh 304) cho script xử lý
+http-request ^https:\/\/(spclient\.wg\.spotify\.com|.*-spclient\.spotify\.com(:443)?)\/user-customization-service\/v1\/customize header-del if-none-match
+http-request ^https:\/\/(?:spclient\.wg|[\w-]+-spclient)\.spotify\.com(?::443)?\/(?:remote-config-resolver\/v\d+\/configuration|nebula\/v\d+\/configuration\/attributes)(?:\?[^#]*)?$ header-del if-none-match
+
+[MITM]
+# CA/cert do Shadowrocket quản lý (bật MITM + cài & tin cậy CA). %APPEND% để không ghi đè hostname module khác.
+hostname = %APPEND% spclient.wg.spotify.com, *spclient.spotify.com
+
+[Script]
+# Hook response protobuf (EeveeSpotify vá BootstrapMessage/UCSResponse.accountAttributes trong app;
+# module thực tế như devchristian1337 dùng script decode-patch-encode protobuf: spot-proto-eevee/ev3).
+# Cần requires-body + binary-body-mode; max-size=0 để không cắt body. Hiện eevee_spotify.js chỉ passthrough (khung).
+spotify-bootstrap-customize = type=http-response,pattern=^https:\/\/(?:spclient\.wg|[\w-]+-spclient)\.spotify\.com(?::443)?\/(?:bootstrap\/v1\/bootstrap|user-customization-service\/v1\/customize)(?:\?.*)?$,requires-body=1,binary-body-mode=1,max-size=0,timeout=10,script-path=eevee_spotify.js,argument=bootstrap-customize
+
+# Endpoint cấu hình mới (app gần đây): remote-config-resolver / nebula attributes (tham khảo module thực tế)
+spotify-remote-config = type=http-response,pattern=^https:\/\/(?:spclient\.wg|[\w-]+-spclient)\.spotify\.com(?::443)?\/(?:remote-config-resolver\/v\d+\/configuration|nebula\/v\d+\/configuration\/attributes)(?:\?[^#]*)?$,requires-body=1,binary-body-mode=1,max-size=0,timeout=10,script-path=eevee_spotify.js,argument=remote-config
+
+# Endpoint thấy trong EeveeSpotifyReborn (PremiumPlanRow)
+spotify-planrow = type=http-response,pattern=^https:\/\/spclient\.wg\.spotify\.com\/pam-view-service\/v1\/GetPremiumPlanRow(?:\?.*)?$,requires-body=1,binary-body-mode=1,max-size=0,timeout=10,script-path=eevee_spotify.js,argument=planrow
+
+# (Tham khảo thêm từ module thực tế, chưa gắn script ở đây)
+# - http-request: .../gabo-receiver-service
+# - http-response ads (binary): .../browsita/.../browse, .../casita/.../home/, .../scrollsita/.../scroll/spotify

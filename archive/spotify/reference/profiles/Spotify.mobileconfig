@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>PayloadCertificateFileName</key>
+			<string>SpotifyGatewayCA.cer</string>
+			<key>PayloadContent</key>
+			<data>
+			MIIDWDCCAkCgAwIBAgIUTXZqMJi0mMRte9rEeGtl+RW/0howDQYJ
+			KoZIhvcNAQELBQAwRDELMAkGA1UEBhMCVk4xGDAWBgNVBAoMD1Nw
+			b3RpZnkgR2F0ZXdheTEbMBkGA1UEAwwSU3BvdGlmeSBHYXRld2F5
+			IENBMB4XDTI2MTEwNDA1MTM0OFoXDTI4MTEwNDA1MTM0OFowRDEL
+			MAkGA1UEBhMCVk4xGDAWBgNVBAoMD1Nwb3RpZnkgR2F0ZXdheTEb
+			MBkGA1UEAwwSU3BvdGlmeSBHYXRld2F5IENBMIIBIjANBgkqhkiG
+			9w0BAQEFAAOCAQ8AMIIBCgKCAQEApsDbL2xTsAwXCcDVdfODsw8z
+			n6dfIlNOISceyvT1wPRM3waGjZRsqn6DQJWXNG8ddimYD7sYL4Ae
+			z5CFS0vIOCQhtx9ijzgdFJA/vu7BqlIuUoRLlT2cftxJcPjjmmwC
+			IJvAKOcqoQsJQ8uQ6QsvvCOKgBhdb7DoOdJTzbGRQVgMt2IDFsyx
+			p+TecA3ygiOj6ScWyuinmseLlJsI5pMOuXHmS7r0kTpSla4zFH/C
+			49rduUSqG81/Fr3wQnqgnoSs4m6IqW1TjVSza4YR/MEKEXchB8jd
+			qwyJ4RjWCDNzO+jfLNpwCt5Z73EeLvt9LR73w4r0FsT4aHaO4w3W
+			24b35wIDAQABo0IwQDAPBgNVHRMBAf8EBTADAQH/MA4GA1UdDwEB
+			/wQEAwIBBjAdBgNVHQ4EFgQU/2310tJphYgVt70O0Q0QhZWzZVww
+			DQYJKoZIhvcNAQELBQADggEBACDbjEK197z12Qt2GUsR7+8WeeC4
+			JsVUcHyPkhVJqjjhRTz5qbcjtbqlIAq4JA6BzuHHe3KmOnBlVudT
+			9xemMMIPPix9EnWePvUMP9Y0jfMfebn74TL401H50WDzXY2yZDg4
+			zFSJ9sDY4JdOhHoMY8RGv2oszTp0LqeDzXBv/EmBEvlpAhgFvfPa
+			0YSBVUdJgxKlbSBL8fgzmzjRrpJdkH451icuNObtOE/m/UR/sMLZ
+			N2LkYFbxu+wRe1a/UZzdikogLpOy1PbDV/UbfHnQLDV2koOPotOw
+			XjFz4DayUr+nI93lcKt/88DxiCavo1KSC3QFuTmi0n4Eo+Fxj78/
+			Y/g=
+			</data>
+			<key>PayloadDisplayName</key>
+			<string>Spotify Gateway CA</string>
+			<key>PayloadIdentifier</key>
+			<string>com.spotifygateway.ca</string>
+			<key>PayloadType</key>
+			<string>com.apple.security.root</string>
+			<key>PayloadUUID</key>
+			<string>004BEDD3-0F1A-4220-AE4E-34A4F55EE3F2</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>DNSSettings</key>
+			<dict>
+				<key>DNSProtocol</key>
+				<string>HTTPS</string>
+				<key>ServerURL</key>
+				<string>https://103.101.161.228/dns-query</string>
+				<key>SupplementalMatchDomains</key>
+				<array>
+					<string>spclient.wg.spotify.com</string>
+					<string>gae2-spclient.spotify.com</string>
+					<string>guc3-spclient.spotify.com</string>
+					<string>gue1-spclient.spotify.com</string>
+					<string>gew1-spclient.spotify.com</string>
+					<string>spclient.spotify.com</string>
+					<string>apresolve.spotify.com</string>
+				</array>
+				<key>SupplementalMatchDomainsNoSearch</key>
+				<true/>
+			</dict>
+			<key>PayloadDisplayName</key>
+			<string>Spotify DNS</string>
+			<key>PayloadIdentifier</key>
+			<string>com.spotifygateway.dns</string>
+			<key>PayloadType</key>
+			<string>com.apple.dnsSettings.managed</string>
+			<key>PayloadUUID</key>
+			<string>AAFDF29D-2FC7-4ED5-8C2F-02BD6874785E</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>PayloadDescription</key>
+	<string>Kich hoat Spotify Gateway. Sau khi cai: Cai dat -&gt; Cai dat chung -&gt; Gioi thieu -&gt; Cai dat tin cay chung nhan -&gt; bat cong tac cho "Spotify Gateway CA".</string>
+	<key>PayloadDisplayName</key>
+	<string>Spotify VIP</string>
+	<key>PayloadIdentifier</key>
+	<string>com.spotifygateway.config</string>
+	<key>PayloadOrganization</key>
+	<string>Spotify Gateway</string>
+	<key>PayloadRemovalDisallowed</key>
+	<false/>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>0040610A-413E-4623-ABBE-0D717B6DF21F</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>

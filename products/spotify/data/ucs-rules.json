@@ -1,0 +1,1604 @@
+{
+  "_comment": "Sinh tự động bởi products/spotify/tools/sync_ucs_rules.py - KHÔNG sửa tay.",
+  "_source": {
+    "repo": "SideloadLabs/EeveeSpotifyReincarnated",
+    "file": "Sources/EeveeSpotify/Premium/DynamicPremium+ModifyingFunctions.swift",
+    "license": "GPL-3.0"
+  },
+  "counts": {
+    "forceBool": 41,
+    "remove": 28,
+    "setBool": 192,
+    "setEnum": 1
+  },
+  "server_authoritative_attributes": [
+    "offline",
+    "can-use-offline",
+    "has-offline-state",
+    "max-offline-downloads-per-device",
+    "max-offline-tracks",
+    "offline-backup",
+    "lyrics-offline",
+    "very-high-bitrate",
+    "audio-quality",
+    "social-session",
+    "social-session-free-tier",
+    "jam-social-session"
+  ],
+  "rules": [
+    {
+      "name": "crossfade_enabled",
+      "scope": "ios-feature-settings",
+      "action": "forceBool",
+      "value": true
+    },
+    {
+      "name": "automix_enabled",
+      "scope": "ios-feature-settings",
+      "action": "forceBool",
+      "value": true
+    },
+    {
+      "name": "crossfade_enabled",
+      "scope": "core-playback-setup",
+      "action": "forceBool",
+      "value": true
+    },
+    {
+      "name": "use_playback_settings_crossfade",
+      "scope": "ios-feature-settings",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "use_playback_settings_gapless",
+      "scope": "ios-feature-settings",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "enable_common_capping",
+      "scope": null,
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": "enable_pns_common_capping",
+      "scope": null,
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": "enable_pick_and_shuffle_common_capping",
+      "scope": null,
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": "enable_pick_and_shuffle_dynamic_cap",
+      "scope": null,
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": "pick_and_shuffle_timecap",
+      "scope": null,
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": null,
+      "scope": "ios-feature-queue",
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": "enable_free_on_demand_experiment",
+      "scope": null,
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": "enable_free_on_demand_context_menu_experiment",
+      "scope": null,
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": "enable_mft_plus_queue",
+      "scope": null,
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": "enable_mft_plus_extended_queue",
+      "scope": null,
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": "enable_playback_timeout_service",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_playback_timeout_error_ui",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "playback_timeout_action",
+      "scope": null,
+      "action": "setEnum",
+      "value": "Nothing"
+    },
+    {
+      "name": "is_remove_from_queue_enabled_for_mft_plus",
+      "scope": null,
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": "is_reordering_for_mft_plus_allowed",
+      "scope": null,
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": "ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "ad_metadata",
+      "scope": null,
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": "ad_slots",
+      "scope": null,
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": "enable_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_audio_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_display_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_video_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_premium_upsell",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_upsell",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "show_upsell",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "show_premium_upsell",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_campaigns",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_promotions",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_search_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_search_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_search_banner_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_search_banner_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_search_sponsored_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_search_sponsored_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_search_upsell",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_home_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_home_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_home_banner_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_home_banner_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_home_sponsored_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_home_sponsored_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_home_upsell",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "is_enabled_pt2",
+      "scope": "ios-feature-shuffletoggleupsell",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "linear_upsell_new_style_experiment_enabled",
+      "scope": "ios-feature-shuffletoggleupsell",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "play_modes_upsell_new_style_experiment_enabled",
+      "scope": "ios-feature-shuffletoggleupsell",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "free_user_shuffle_upsell_sheet_enabled",
+      "scope": "ios-jam-freeusershuffleupsellsheetpage-impl",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "free_user_skip_upsell_sheet_enabled",
+      "scope": "ios-jam-freeuserskipupsellpage-impl",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "free_hosted_jams_upsell_enabled",
+      "scope": "ios-jam-freehostedjamsupsell-impl",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "premium_gated_start_jam_buttons_enabled",
+      "scope": "ios-sociallistening-configuration-impl",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "is_promo_cta_enabled",
+      "scope": "ios-reinventfree-contextualupsellpremiumpromo-impl",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "show_time_cap_upsell_with_premium_badge",
+      "scope": "ios-reinventfree-contextualupsellpremiumpromo-impl",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "enable_video_time_cap_upsell",
+      "scope": "ios-reinventfree-controllerui-impl",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "enable_video_time_cap_upsell_on_search",
+      "scope": "ios-reinventfree-controllerui-impl",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "music_video_upsell_enabled",
+      "scope": "ios-reinventfree-timecappivot-impl",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "is_gbb_upsell_enabled",
+      "scope": "ios-settings-mediaqualitypageplugin-impl",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "should_show_pigeon_upsell",
+      "scope": "ios-settings-mediaqualitypageplugin-impl",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "preview_ended_upsell_enabled",
+      "scope": "ios-system-listeningparties",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "enable_now_playing_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_now_playing_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_now_playing_banner_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_now_playing_banner_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_now_playing_sponsored_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_now_playing_sponsored_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_now_playing_upsell",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_artist_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_artist_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_artist_banner_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_artist_banner_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_artist_sponsored_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_artist_sponsored_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_artist_upsell",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_playlist_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_playlist_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_playlist_banner_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_playlist_banner_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_playlist_sponsored_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_playlist_sponsored_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_playlist_upsell",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_album_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_album_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_album_banner_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_album_banner_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_album_sponsored_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_album_sponsored_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_album_upsell",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_library_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_library_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_library_banner_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_library_banner_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_library_sponsored_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_library_sponsored_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_library_upsell",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_audiobook_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_audiobook_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_audiobook_banner_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_audiobook_banner_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_audiobook_sponsored_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_audiobook_sponsored_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_audiobook_upsell",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_podcast_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_podcast_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_podcast_banner_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_podcast_banner_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_podcast_sponsored_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_podcast_sponsored_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_podcast_upsell",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_content",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_playlists",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_sessions",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_stories",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_videos",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_artist",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_artists",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_album",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_albums",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_track",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_tracks",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_show",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_shows",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_episode",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_episodes",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_audiobook",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_audiobooks",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_podcast",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_podcasts",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_search",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_search_results",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_search_banner",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_search_banners",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_home",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_home_banner",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_home_banners",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_now_playing",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_now_playing_banner",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_now_playing_banners",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_artist_banner",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_artist_banners",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_playlist_banner",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_playlist_banners",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_album_banner",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_album_banners",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_library_banner",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_library_banners",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_audiobook_banner",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_audiobook_banners",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_podcast_banner",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_podcast_banners",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_search_sponsored_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_search_sponsored_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_home_sponsored_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_home_sponsored_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_now_playing_sponsored_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_now_playing_sponsored_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_artist_sponsored_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_artist_sponsored_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_playlist_sponsored_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_playlist_sponsored_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_album_sponsored_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_album_sponsored_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_library_sponsored_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_library_sponsored_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_audiobook_sponsored_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_audiobook_sponsored_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_podcast_sponsored_ad",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_podcast_sponsored_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": null,
+      "scope": "ios-ad-on-app-open",
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": null,
+      "scope": "ios-feature-adonappopen",
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": "enabled",
+      "scope": "ios-feature-adonappopen",
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "background_refresh_frequency_seconds",
+      "scope": "ios-feature-adonappopen",
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "is_ad_on_app_open_enabled",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "ad_on_app_open_enabled",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "adonappopen_enabled",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": null,
+      "scope": "marquee",
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": null,
+      "scope": "ios-feature-marquee",
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": null,
+      "scope": "leavebehindadsbase",
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": null,
+      "scope": "ios-feature-leavebehindadsbase",
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": "unified_leavebehind_npv_scroll_music_enabled",
+      "scope": "ios-nowplaying-scroll-impl",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "unified_leavebehind_npv_scroll_podcast_enabled",
+      "scope": "ios-nowplaying-scroll-impl",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "use_unified_leavebehind_fetch",
+      "scope": "ios-feature-embeddedplaylist",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "foreground_enabled",
+      "scope": "ios-adsnowplaying-embeddednpv-impl",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "music_track_change_enabled",
+      "scope": "ios-adsnowplaying-embeddednpv-impl",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "enable_ads_on_podcast",
+      "scope": "ios-adsnowplaying-embeddednpv-impl",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": null,
+      "scope": "ios-feature-instreamads",
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": null,
+      "scope": "ios-adsembedded-embeddedctaelements-impl",
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": null,
+      "scope": "ios-adsnowplaying-embeddednpv-impl",
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": null,
+      "scope": "ios-adsplatform-elementimpl",
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": null,
+      "scope": "ios-system-adssponsoredcontext",
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": "enable_ads_connect_state_observer",
+      "scope": "ios-feature-adsbase",
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_minimal_preroll_management",
+      "scope": "ios-feature-adsbase",
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_swift_ads_base_movement_logger",
+      "scope": "ios-feature-adsbase",
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": null,
+      "scope": "ios-feature-adsswift",
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": "embedded_npv_video_show_with_canvas",
+      "scope": "ios-feature-adsnowplayingui",
+      "action": "forceBool",
+      "value": false
+    },
+    {
+      "name": "sponsored_context_mismatch_aderror_enabled",
+      "scope": "ios-feature-adssponsoredcontext",
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "sponsored_playlist_v2_enabled",
+      "scope": "ios-feature-adssponsoredcontext",
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "sponsored_npb_slot_fetch_enabled",
+      "scope": "ios-feature-adssponsoredcontextnpbattachment",
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": null,
+      "scope": "ios-feature-adsidentitytracking",
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": "prompted_playlist_merchandizing_enabled",
+      "scope": "ios-feature-search",
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "social_proof_playlist_enabled",
+      "scope": "ios-feature-search",
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "social_proof_plays_in_search_enabled",
+      "scope": "ios-feature-search",
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "video_carousel_section_enabled",
+      "scope": "ios-feature-search",
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "watch_feed_section_enabled",
+      "scope": "ios-feature-search",
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_popups",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_leave_behind_ads_card_element",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "music_npv_leavebehinds_enabled",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_ads_on_podcast",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_display_element",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_video_element",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "is_promo_cta_enabled",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "show_time_cap_upsell_with_premium_badge",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_video_time_cap_upsell",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_video_time_cap_upsell_on_search",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "music_video_upsell_enabled",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "is_gbb_upsell_enabled",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "should_show_pigeon_upsell",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "disable_suggested_tracks_upsell",
+      "scope": null,
+      "action": "setBool",
+      "value": true
+    },
+    {
+      "name": "is_enabled_pt2",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "show_skip_button_during_skippable_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": true
+    },
+    {
+      "name": "sponsored_playlist_v2_header_dismissible",
+      "scope": null,
+      "action": "setBool",
+      "value": true
+    },
+    {
+      "name": "use_mock_sponsorship_endpoint",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_popup",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "show_popups",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "show_popup",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_interstitials",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_interstitial",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_overlays",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_overlay",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_promotions_on_home",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_promotions_on_search",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_search_page_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_home_page_ads",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_billboard",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_billboards",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_audio_ads_player",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_display_ads_player",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_video_ads_player",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_audio_ads_player_v2",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_display_ads_player_v2",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_video_ads_player_v2",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_search_results_v2",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "enable_sponsored_home_results_v2",
+      "scope": null,
+      "action": "setBool",
+      "value": false
+    },
+    {
+      "name": "should_nova_scroll_use_scrollsita",
+      "scope": null,
+      "action": "remove",
+      "value": ""
+    },
+    {
+      "name": "enable_lyrics_share",
+      "scope": "ios-feature-lyrics",
+      "action": "forceBool",
+      "value": true
+    },
+    {
+      "name": "lyrics_share_enabled",
+      "scope": "ios-feature-lyrics",
+      "action": "forceBool",
+      "value": true
+    },
+    {
+      "name": "enable_lyrics_sharing",
+      "scope": "ios-feature-lyrics",
+      "action": "forceBool",
+      "value": true
+    },
+    {
+      "name": "is_lyrics_share_enabled",
+      "scope": "ios-feature-lyrics",
+      "action": "forceBool",
+      "value": true
+    },
+    {
+      "name": "lyrics_shareable",
+      "scope": "ios-feature-lyrics",
+      "action": "forceBool",
+      "value": true
+    },
+    {
+      "name": "enable_share_link_preview_uploads",
+      "scope": "ios-feature-lyrics",
+      "action": "forceBool",
+      "value": true
+    },
+    {
+      "name": "enable_sharing_v2",
+      "scope": "ios-feature-lyrics",
+      "action": "forceBool",
+      "value": true
+    },
+    {
+      "name": "enable_lyrics_share",
+      "scope": null,
+      "action": "forceBool",
+      "value": true
+    },
+    {
+      "name": "lyrics_share_enabled",
+      "scope": null,
+      "action": "forceBool",
+      "value": true
+    },
+    {
+      "name": "enable_lyrics_sharing",
+      "scope": null,
+      "action": "forceBool",
+      "value": true
+    },
+    {
+      "name": "is_lyrics_share_enabled",
+      "scope": null,
+      "action": "forceBool",
+      "value": true
+    },
+    {
+      "name": "lyrics_shareable",
+      "scope": null,
+      "action": "forceBool",
+      "value": true
+    },
+    {
+      "name": "enable_share_link_preview_uploads",
+      "scope": null,
+      "action": "forceBool",
+      "value": true
+    },
+    {
+      "name": "enable_sharing_v2",
+      "scope": null,
+      "action": "forceBool",
+      "value": true
+    },
+    {
+      "name": "com.spotify.madprops.use.ucs.product.state",
+      "scope": null,
+      "action": "setBool",
+      "value": true
+    },
+    {
+      "name": "com.spotify.madprops.delivered.by.ucs",
+      "scope": null,
+      "action": "setBool",
+      "value": true
+    }
+  ],
+  "_note_madprops": "2 key madprops bổ sung tay 2026-11-18 (nguồn: app2smile/rules js/spotify-proto.js). Chưa có trong upstream EeveeSpotify nên sync lại sẽ mất — nếu mất thì thêm lại.",
+  "_counts_total": 262
+}

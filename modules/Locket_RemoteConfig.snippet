@@ -1,0 +1,12 @@
+# Locket VIP (Video 30s + AI Filters & Photobooth) for Quantumult X
+# By Xwuan
+
+[rewrite_remote]
+
+[rewrite_local]
+^https:\/\/api\.revenuecat\.com\/.+\/(receipts$|subscribers\/[^/]+$) url script-response-body https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/scripts/locket_revenuecat_response.js
+^https:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers) url script-request-header https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/scripts/locket_revenuecat_request.js
+^https:\/\/firebaseremoteconfig\.googleapis\.com\/v1\/projects\/locket-4252a\/.+ url script-response-body https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/scripts/locket_firebase_response.js
+
+[mitm]
+hostname = api.revenuecat.com, firebaseremoteconfig.googleapis.com

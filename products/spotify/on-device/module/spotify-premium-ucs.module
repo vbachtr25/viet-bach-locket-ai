@@ -1,0 +1,129 @@
+#!name=Spotify Premium (Shadowrocket)
+#!desc=Mở khoá Premium ở tầng mạng: patch protobuf UCS/Bootstrap/nebula + chặn quảng cáo, upsell và logout. Cần bật HTTPS Decrypt (MITM) và tin cậy CA Shadowrocket.
+#!author=Xwuan
+#!category=Xwuan Research
+#!homepage=https://github.com/Xwuan19/Xwuan-Tweaks
+#
+# ============================================================================
+# ĐỌC TRƯỚC KHI DÙNG (3 điều kiện bắt buộc, thiếu 1 là module không chạy)
+# ============================================================================
+# 1. Bật HTTPS Decrypt: Config > ⓘ > HTTPS Decrypt > Certificate > Generate
+#    new CA > Install Certificate, rồi iOS Settings > General > About >
+#    Certificate Trust Settings > bật tin cậy. Không có bước này thì mọi hook
+#    [Script] đều không nhận được body.
+# 2. UDP phải đi qua proxy. Nếu QUIC lọt ra ngoài, Spotify dùng HTTP/3 và
+#    script không bao giờ thấy body. Module đã chặn QUIC của Spotify ở [Rule];
+#    đồng thời bật Settings > UDP > Enable Forwarding.
+# 3. iOS 15 trở lên. Từ iOS 15 giới hạn bộ nhớ của Network Extension tăng từ
+#    15 MB lên 50 MB. iOS cũ hơn có thể làm module im lặng hoặc rớt VPN.
+#
+# ============================================================================
+# GIỚI HẠN - đọc trước khi kỳ vọng
+# ============================================================================
+# Module này chỉ can thiệp được lớp HTTP. EeveeSpotifyReincarnated còn vá cả
+# ObjC runtime trong app (117 hook group), UI layer và nhiều state cục bộ.
+# Vì vậy module KHÔNG đạt parity với tweak: offline/audio-quality/social-session
+# do server quyết định, không thể vượt qua bằng network rewriting.
+# Xem products/spotify/audit/eevee-reincarnated-audit.md
+#
+# Ghi chú kỹ thuật về cú pháp: mọi dòng dưới đây theo đúng dạng đã thấy trong
+# module Shadowrocket đang chạy thật (app2smile, duyvinh09, deezertidal).
+# Xem products/spotify/audit/shadowrocket-module-syntax.md
+
+[Rule]
+# --- Ép Spotify rời QUIC/HTTP3 để MITM bắt được toàn bộ body qua TCP ---
+# Dùng PROTOCOL,UDP (không dùng PROTOCOL,QUIC): "UDP" là token đã xác nhận
+# trong module thật, "QUIC" chỉ có trong Clash/sing-box.
+AND,((DOMAIN-SUFFIX,spotify.com),(PROTOCOL,UDP)),REJECT
+
+# --- Host quảng cáo / tracking / đo lường ---
+DOMAIN,aet.spotify.com,REJECT
+DOMAIN,ad.spotify.com,REJECT
+DOMAIN,ads.spotify.com,REJECT
+DOMAIN,adeventtracker.spotify.com,REJECT
+DOMAIN,gads.current.spotify.com,REJECT
+DOMAIN-SUFFIX,doubleclick.net,REJECT
+DOMAIN-SUFFIX,googlesyndication.com,REJECT
+DOMAIN-SUFFIX,googleadservices.com,REJECT
+
+[URL Rewrite]
+# Cú pháp: <regex URL> _ reject-200
+# Dùng reject-200 (không dùng "reject" trần): reject làm rớt kết nối, app
+# không nhận được gì nên retry liên tục -> nóng máy, tốn pin. reject-200 trả
+# 200 rỗng, app coi như "không có quảng cáo" và thôi gọi lại.
+# Chi tiết: products/spotify/audit/shadowrocket-module-syntax.md
+
+# --- Quảng cáo / ad-logic / đo lường ---
+^https?:\/\/(?:[\w-]+-)?spclient\.spotify\.com(?::443)?\/(?:ads\/|ad-logic\/|dac\/view\/v1\/|esperanto\/[^?#]*(?:[Aa]d|[Ss]lot)) _ reject-200
+^https?:\/\/(?:[\w-]+-)?spclient\.spotify\.com(?::443)?\/(?:ad-slot\/|ad-inventory\/|ad-on-app-open|ad-card\/|native-ad\/|display-ad\/|search-ad\/|search-ads\/|home-ad\/|home-ads\/) _ reject-200
+^https?:\/\/(?:[\w-]+-)?spclient\.spotify\.com(?::443)?\/(?:sponsored\/|sponsored-content\/|sponsored-ad\/|sponsored-shelf\/|sponsored-row\/|sponsored-item\/|promoted\/) _ reject-200
+
+# --- Upsell / premium marketing / trial ---
+^https?:\/\/(?:[\w-]+-)?spclient\.spotify\.com(?::443)?\/(?:upsell\/|premium-upsell|upsell-banner|upsell-card|referrals\/upsell|upgrade-component\/) _ reject-200
+^https?:\/\/(?:[\w-]+-)?spclient\.spotify\.com(?::443)?\/premium-marketing\/upsellOffer _ reject-200
+^https?:\/\/(?:[\w-]+-)?spclient\.spotify\.com(?::443)?\/trials-facade\/start-trial _ reject-200
+
+# --- Banner / interstitial / marquee / leavebehind (ClientMessagingPlatform) ---
+^https?:\/\/(?:[\w-]+-)?spclient\.spotify\.com(?::443)?\/(?:campaign\/|billboard\/|banner\/|interstitial\/|overlay\/|popup\/|pop-up\/|leaderboard\/|fullbleed\/) _ reject-200
+^https?:\/\/(?:[\w-]+-)?spclient\.spotify\.com(?::443)?\/(?:merchandising\/|marketing\/|leavebehind|leave-behind|marquee\/) _ reject-200
+^https?:\/\/(?:[\w-]+-)?spclient\.spotify\.com(?::443)?\/pendragon\/[^?#]*FetchMessage _ reject-200
+
+# --- Bảo vệ phiên: chặn logout/revoke để không bị đá về màn hình đăng nhập ---
+# Bê nguyên danh sách session-protection của EeveeSpotify 7.5.0.
+# Nếu một ngày Spotify đổi flow và app không đăng nhập được, comment 5 dòng
+# dưới đây trước tiên — đây là phần "xâm lấn" nhất của module.
+^https?:\/\/(?:[\w-]+-)?spclient\.spotify\.com(?::443)?\/.*\/logout _ reject-200
+^https?:\/\/(?:[\w-]+-)?spclient\.spotify\.com(?::443)?\/.*\/(?:sign-out|signout) _ reject-200
+^https?:\/\/(?:[\w-]+-)?spclient\.spotify\.com(?::443)?\/.*\/(?:token\/revoke|session\/purge|DeleteToken|auth\/expire) _ reject-200
+^https?:\/\/apresolve\.spotify\.com\/.*\/(?:logout|revoke) _ reject-200
+^https?:\/\/login5\.spotify\.com\/.*\/(?:logout|revoke) _ reject-200
+
+[Header Rewrite]
+# Cú pháp THẬT (không có tiền tố http-request/http-response):
+#     <regex URL> header-del <tên header>
+# Đã đối chiếu với module duyvinh09 + deezertidal đang chạy trên Shadowrocket.
+#
+# Xoá cache validator để server trả 200 kèm body. Nếu server trả 304 thì
+# không có body để patch -> mất tác dụng. Đây chính là cơ chế
+# NebulaAttributes.unconditional() của EeveeSpotify.
+# Pattern rộng vì host spclient đổi theo region (gae2/guc3/gew4/...).
+^https?:\/\/(?:[\w-]+-)?spclient\.spotify\.com(?::443)?\/ header-del If-None-Match
+^https?:\/\/(?:[\w-]+-)?spclient\.spotify\.com(?::443)?\/ header-del If-Modified-Since
+^https?:\/\/(?:[\w-]+-)?spclient\.spotify\.com(?::443)?\/ header-del Cache-Control
+
+[MITM]
+hostname = %APPEND% spclient.wg.spotify.com, *-spclient.spotify.com, spclient.spotify.com, apresolve.spotify.com, login5.spotify.com
+# h2 = true: Spotify 9.x đi HTTP/2. Không bật thì phần lớn request không giải
+# mã được và hook không thấy body.
+h2 = true
+
+[Script]
+# Engine protobuf tự chứa: scripts/spotify_ucs.js (không cần thư viện ngoài).
+#   bootstrap/v1/bootstrap                     -> BootstrapMessage (bọc 3 lớp)
+#   user-customization-service/v1/customize    -> UcsResponseWrapper
+#   nebula/vN/configuration/attributes         -> AccountAttributesResponse
+#   remote-config-resolver/vN/configuration    -> ResolveResponse (crossfade/automix)
+#
+# Vì sao KHÔNG đặt engine=jsc:
+#   - Shadowrocket mặc định dùng webview cho http-response, và webview bridge
+#     Uint8Array qua được. jsc thì không, phải đổi sang ArrayBuffer.
+#   - Script đã tự nhận biết engine qua $environment và trả đúng kiểu, nên
+#     chạy được ở cả hai. Để mặc định (webview) an toàn hơn vì không tốn giới
+#     hạn bộ nhớ JSC và ít rủi ro hỏng body.
+#
+# max-size=0 có hai cách hiểu trong tài liệu cộng đồng ("không giới hạn" và
+# "có thể bị cắt"), nên dùng số dương lớn: 8 MiB là dư cho payload UCS/
+# bootstrap (thực đo ~60 KB). Vượt ngưỡng này script tự passthrough nguyên
+# body nên không bao giờ làm hỏng response.
+#
+# argument: full | ads | off   (+ thêm "debug" để bật log chẩn đoán)
+#   full  = giả Premium + chặn quảng cáo (mặc định)
+#   ads   = chỉ chặn quảng cáo, không giả Premium
+#   off   = tắt hoàn toàn phần patch, giữ nguyên chặn URL
+# Ví dụ bật log khi cần soi trên điện thoại:
+#   ...argument=full&debug=true
+
+spotify-bootstrap = type=http-response, pattern=^(https:\/\/)(spclient\.wg\.spotify\.com|.*-spclient\.spotify\.com(:443)?)\/bootstrap\/v1\/bootstrap(\?.*)?$, script-path=https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/products/spotify/on-device/engine/spotify_ucs.js?v=20261118_3, requires-body=1, binary-body-mode=1, max-size=8388608, timeout=30, argument=full
+spotify-customize = type=http-response, pattern=^(https:\/\/)(spclient\.wg\.spotify\.com|.*-spclient\.spotify\.com(:443)?)\/user-customization-service\/v1\/customize(\?.*)?$, script-path=https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/products/spotify/on-device/engine/spotify_ucs.js?v=20261118_3, requires-body=1, binary-body-mode=1, max-size=8388608, timeout=30, argument=full
+spotify-nebula = type=http-response, pattern=^(https:\/\/)(spclient\.wg\.spotify\.com|.*-spclient\.spotify\.com(:443)?)\/nebula\/v\d+\/configuration\/attributes(\?.*)?$, script-path=https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/products/spotify/on-device/engine/spotify_ucs.js?v=20261118_3, requires-body=1, binary-body-mode=1, max-size=8388608, timeout=30, argument=full
+spotify-remote-config = type=http-response, pattern=^(https:\/\/)(spclient\.wg\.spotify\.com|.*-spclient\.spotify\.com(:443)?)\/remote-config-resolver\/v\d+\/configuration(\?.*)?$, script-path=https://raw.githubusercontent.com/Xwuan19/Xwuan-Tweaks/main/products/spotify/on-device/engine/spotify_ucs.js?v=20261118_3, requires-body=1, binary-body-mode=1, max-size=8388608, timeout=30, argument=full

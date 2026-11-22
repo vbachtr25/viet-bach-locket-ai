@@ -1,5 +1,27 @@
+# Ignore local secret keys
+ca/*.key
+proxy/ca/*.key
+*.key
+*.pfx
+
+# Fly & Vercel temp artifacts
+.fly
+
+# System & IDE files
+.DS_Store
+Thumbs.db
+node_modules/
+dist/
+build/
+*.exe
 .env
-.venv/
-__pycache__/
-*.pyc
-generated/
+.env.*
+.env.local
+
+.vercel
+.playwright-mcp/
+
+# Key/cert lạc chỗ (CA key không bao giờ được vào git)
+**/root-ca.key
+**/*.p12
+**/*.pem
